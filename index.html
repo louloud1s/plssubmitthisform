@@ -9,28 +9,48 @@
 
     <!-- Script to Play Music -->
 
-    <audio id="bg-music" src="/music/chiptune.mp3" loop></audio>
-    <button id="music-toggle" onclick="toggleMusic()"> 🔊 </button>
+    <audio id="bg-music" src="music/chiptune.mp3" loop></audio>
+    <button id="music-toggle" type="button" aria-label="Pause music"> 🔊 </button>
 
 <script>
 
   document.addEventListener('DOMContentLoaded', () => {
     const music = document.getElementById('bg-music');
-    
-    // Optional: try playing immediately (may fail if blocked)
+    const musicToggle = document.getElementById('music-toggle');
+
+    const updateMusicToggle = () => {
+      const isPlaying = !music.paused;
+      musicToggle.textContent = isPlaying ? ' 🔊 ' : ' 🔇 ';
+      musicToggle.setAttribute('aria-label', isPlaying ? 'Pause music' : 'Play music');
+    };
+
+    music.addEventListener('play', updateMusicToggle);
+    music.addEventListener('pause', updateMusicToggle);
+    updateMusicToggle();
+
     music.play().catch(() => {
-      console.log("Autoplay blocked. Waiting for user interaction.");
+      console.log("Autoplay blocked. Use the music button or interact with the page to start playback.");
     });
 
-    // Fallback: Play on the first user click/touch anywhere on the page
+    musicToggle.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (music.paused) {
+        music.play().catch((error) => {
+          console.error("Unable to play background music.", error);
+        });
+      } else {
+        music.pause();
+      }
+    });
+
     const startAudio = () => {
-      music.play();
+      music.play().catch((error) => {
+        console.error("Unable to play background music.", error);
+      });
       window.removeEventListener('click', startAudio);
-      window.removeEventListener('touchstart', startAudio);
     };
 
     window.addEventListener('click', startAudio);
-    window.addEventListener('touchstart', startAudio);
   });
 </script>
 
