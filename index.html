@@ -6,6 +6,36 @@
 </head>
 
 <body>
+
+    <!-- Script to Play Music -->
+
+    <audio id="bg-music" src="/music/chiptune.mp3" loop></audio>
+    <button id="music-toggle" onclick="toggleMusic()"> 🔊 </button>
+
+<script>
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const music = document.getElementById('bg-music');
+    
+    // Optional: try playing immediately (may fail if blocked)
+    music.play().catch(() => {
+      console.log("Autoplay blocked. Waiting for user interaction.");
+    });
+
+    // Fallback: Play on the first user click/touch anywhere on the page
+    const startAudio = () => {
+      music.play();
+      window.removeEventListener('click', startAudio);
+      window.removeEventListener('touchstart', startAudio);
+    };
+
+    window.addEventListener('click', startAudio);
+    window.addEventListener('touchstart', startAudio);
+  });
+</script>
+
+
+<!-- Website Body -->
     <div class="image" data-image-base="images/">
         <img id="display-image" src="" alt="are you human?">
     </div>
@@ -20,7 +50,6 @@
     </div>
 
     <script src="script.js"></script>
-
 
 </body>
 
